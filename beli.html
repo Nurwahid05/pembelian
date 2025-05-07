@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <title>Form Pembayaran</title>
+    <link rel="stylesheet" href="order.css">
+</head>
+<body>
+    <div class="container">
+        <h1>Detail Pemesanan</h1>
+        <div id="daftarPesanan"></div>
+        <form id="formBayar">
+            <label>Nomor Meja:</label>
+            <input type="number" id="nomorMeja" required>
+
+            <label>Metode Pembayaran:</label>
+            <select id="metode">
+                <option value="Tunai">Tunai</option>
+                <option value="DANA">DANA</option>
+                <option value="OVO">OVO</option>
+            </select>
+
+            <button type="submit">Konfirmasi Pembayaran</button>
+        </form>
+    </div>
+
+    <script>
+        // Ambil data pesanan dari localStorage
+        const data = JSON.parse(localStorage.getItem('pembelian'));
+        const total = localStorage.getItem('total');
+        const list = document.getElementById('daftarPesanan');
+
+        // Tampilkan daftar pesanan
+        if (data && data.length > 0) {
+            data.forEach(item => {
+                const div = document.createElement('div');
+                div.innerHTML = `<p>${item.name} x ${item.jumlah} = Rp${(item.harga * item.jumlah).toLocaleString('id-ID')}</p>`;
+                list.appendChild(div);
+            });
+
+            const totalDiv = document.createElement('h2');
+            totalDiv.innerText = `Total Bayar: Rp${parseInt(total).toLocaleString('id-ID')}`;
+            list.appendChild(totalDiv);
+        } else {
+            list.innerHTML = "<p>Tidak ada pesanan.</p>";
+        }
+
+        // Tangani konfirmasi pembayaran
+        document.getElementById('formBayar').addEventListener('submit', function(e) {
+            e.preventDefault();
+
+            const meja = document.getElementById('nomorMeja').value;
+            const metode = document.getElementById('metode').value;
+
+            alert(`Pesanan berhasil dikonfirmasi!\nNomor Meja: ${meja}\nPembayaran: ${metode}\nTotal: Rp${parseInt(total).toLocaleString('id-ID')}`);
+
+            // Hanya hapus data pesanan (bukan stok makanan!)
+            localStorage.removeItem('pembelian');
+            localStorage.removeItem('total');
+
+            window.location.href = 'index.html';
+        });
+    </script>
+</body>
+</html>
